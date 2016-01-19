@@ -2,7 +2,6 @@ import os
 import codecs
 import re
 
-# Create a txtlist to store all txt filename in current directory.
 txtkw = re.compile('txt\Z')
 txtlist = filter(txtkw.search, os.listdir(u'.'))
 
@@ -21,28 +20,32 @@ else:
     infile.close()
 
     outfile = codecs.open(outfilename, 'w', encoding='utf-8')
-    section = "none"
+    state = "none"
     contentlist = []
     for line in inlist:
-        linekw = re.compile(u'\d\-?\d?\.?\u3000(.+)')
-        if section == "none":
-            if re.match(linekw, line):
-                section = "content"
-                templine = re.match(linekw, line)
-                vocabulary = templine.group(1)
-        elif section == "content":
-            if re.match("\r\n", line):
-                section = "none"
+        linekw = re.compile(u'\d\-?\d?\.?\u3000(.+)\r\n')
+        if re.match(linekw, line):
+            if state == "ready"
+                # Check follow and mean
+                for item in contenlist:
+                    fwkw = re.compile(u'\+')
+                    if re.search(fwkw, item):
+                        print "follow"
+                        fwflag = TRUE
+                    if
+                # TODO Replace \n to \r\n when release windows version
                 outfile.write(vocabulary + " " +
-                              '<br/>'.join(contentlist) + "\r\n")
+                              '<br/>'.join(contentlist) + "\n")
                 contentlist = []
-            else:
-                line = line.rstrip()
-                contentlist.append(line)
+                state = "prepare"
+            templine = re.match(linekw, line)
+            vocabulary = templine.group(1)
+        else:
+            state = "ready"
+            line = line.rstrip()
+            contentlist.append(line)
     else:
+        print vocabulary
         print "Format completed!"
         outfile.close()
 
-#        os.rename(outfilename, infilename)
-#        os.chdir("../")
-#        os.remove(infilename)
