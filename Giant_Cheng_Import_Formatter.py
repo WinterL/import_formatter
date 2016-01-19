@@ -5,19 +5,14 @@ import re
 
 
 
-#
-# amenamefile = codecs.open("Gamename.txt", 'r', encoding='utf-16')
-# amename = gamenamefile.readline().rstrip()
-# amenamefile.close()
+# Create a txtlist to store all txt filename in current directory.
+txtkw = re.compile('txt\Z')
+txtlist = filter(txtkw.search, os.listdir(u'.'))
 
-
-# xtkw = re.compile('txt\Z')
-# xtlist = filter(txtkw.search, os.listdir(u'.'))
-# xtlist.remove("Gamename.txt")
-
-# f len(txtlist) == 0:
-#    print "There is no text file in current directory, " \
-#            + "Please move a text file to current directory."
+# Mistake-proofing
+if len(txtlist) == 0:
+    print "There is no text file in current directory, " \
+        + "Please move some text files to current directory."
 # lif len(txtlist) > 1:
 #    print "There are mutiple text files in current directory " \
 #            + "please remove unnecessary txt files."
