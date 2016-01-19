@@ -1,9 +1,6 @@
-
 import os
 import codecs
 import re
-
-
 
 # Create a txtlist to store all txt filename in current directory.
 txtkw = re.compile('txt\Z')
@@ -12,49 +9,39 @@ txtlist = filter(txtkw.search, os.listdir(u'.'))
 # Mistake-proofing
 if len(txtlist) == 0:
     print "There is no text file in current directory, " \
-        + "Please move some text files to current directory."
-# lif len(txtlist) > 1:
-#    print "There are mutiple text files in current directory " \
-#            + "please remove unnecessary txt files."
-# lse:
-#    #
-#    infilename = txtlist[0]
-#    outfilename = u"out" + txtlist[0]
-#    if "processed" not in os.listdir(u'.'):
-#        os.mkdir("processed")
+        + "please move some text files to current directory."
+elif "importfile.txt" in txtlist:
+    print "importfile.txt Dectected, please remove this file."
+# Main
+else:
+    infilename = txtlist[0]
+    outfilename = u"importfile.txt"
+    infile = codecs.open(infilename, 'r', encoding='utf-16')
+    inlist = infile.readlines()
+    infile.close()
 
-#    infile = codecs.open(infilename, 'r', encoding='utf-16')
-#    os.chdir("./processed/")
-#    outfile = codecs.open(outfilename, 'w', encoding='utf-16')
-#    #
-#    donekw = re.compile(u'.+\u3000-.+')
-#    for line in infile.readlines():
-
-#        if re.search(donekw, line):
-#            print "This file was formatted, please replace a new text file."
-#            infile.close()
-#            outfile.close()
-#            os.remove(outfilename)
-#            break
-#        else:
-#            linekw1 = re.compile(u'(\u300C.+\u300D)+\r\n')
-#            linekw2 = re.compile(u'(\u300C.+\u300D)+.+\r\n')
-#            linekw3 = re.compile(u'(\u300C.+\u300D)+.+(\u300C.+\u300D)+\r\n')
-#            if re.match(linekw3, line):
-#                line = line.rstrip()
-#                outfile.write(line + u'\u3000' + "-" + gamename + "\r\n")
-#            elif re.match(linekw1, line):
-#                line = line.rstrip()
-#                outfile.write(line + u'\u3000' + "-" + gamename + "\r\n")
-#            else:
-#                # Unicode 300C 3000 300D
-#                line = line.rstrip()
-#                outfile.write(u'\u300C' + line + u'\u300D' + u'\u3000' +
-#                              "-" + gamename + "\r\n")
-#    else:
-#        print "Format completed!"
-#        infile.close()
-#        outfile.close()
+    outfile = codecs.open(outfilename, 'w', encoding='utf-8')
+    section = "none"
+    contentlist = []
+    for line in inlist:
+        linekw = re.compile(u'\d\-?\d?\.?\u3000(.+)')
+        if section == "none":
+            if re.match(linekw, line):
+                section = "content"
+                templine = re.match(linekw, line)
+                vocabulary = templine.group(1)
+        elif section == "content":
+            if re.match("\r\n", line):
+                section = "none"
+                outfile.write(vocabulary + " " +
+                              '<br/>'.join(contentlist) + "\r\n")
+                contentlist = []
+            else:
+                line = line.rstrip()
+                contentlist.append(line)
+    else:
+        print "Format completed!"
+        outfile.close()
 
 #        os.rename(outfilename, infilename)
 #        os.chdir("../")
